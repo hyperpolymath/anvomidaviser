@@ -1,0 +1,45 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+// Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+= Anvomidaviser
+Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+:toc: left
+:icons: font
+
+== What Is This?
+
+Anvomidaviser converts **choreographic intent and ISU notation** into formal
+figure skating programs — validated against International Skating Union rules.
+
+Anvomidav is the first programming language for figure skating choreographers.
+Anvomidaviser bridges existing notation systems to formal Anvomidav programs.
+
+== How It Works
+
+Describe your program in `anvomidaviser.toml` or import ISU protocols. Anvomidaviser:
+
+1. Parses existing choreographic notation (ISU XML, IJS protocols)
+2. Converts to formal Anvomidav element sequences
+3. Validates against ISU technical rules (element requirements, transitions)
+4. Generates rink diagrams, timing charts, and 3D visualisations
+5. Scores the program against the Code of Points
+
+== Key Value
+
+* **ISU compliance checking** before competition
+* **Automatic scoring estimates** from the Code of Points
+* **Visual output** — rink diagrams and timing charts
+* **Collaboration** — version-controlled choreographic works
+
+== Architecture
+
+Follows the hyperpolymath -iser pattern:
+manifest -> Idris2 ABI proof -> Zig FFI bridge -> target language codegen.
+Part of the https://github.com/hyperpolymath/iseriser[-iser family].
+
+== Status
+
+**Pre-alpha.** Architecture defined, scaffolding in place, codegen pending.
+
+== License
+
+SPDX-License-Identifier: PMPL-1.0-or-later
