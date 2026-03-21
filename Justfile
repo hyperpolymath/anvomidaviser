@@ -34,7 +34,7 @@ clean:
 
 # Run the CLI
 run *ARGS:
-    cargo run -- {{ARGS}}
+    cargo run -- --help
 
 # Full quality check (lint + test + fmt-check)
 quality: fmt-check lint test

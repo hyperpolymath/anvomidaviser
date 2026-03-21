@@ -1,13 +1,20 @@
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+
 # ⚠️ STOP - CRITICAL READING REQUIRED
 
 **THIS FILE MUST BE READ FIRST BY ALL AI AGENTS**
 
 ## WHAT IS THIS?
 
-This is the AI manifest for **[YOUR-REPO-NAME]**. It declares:
+This is the AI manifest for **anvomidaviser**. It declares:
 - Canonical file locations (where things MUST be, and nowhere else)
 - Critical invariants (rules that must NEVER be violated)
 - Repository structure and organization
+
+Anvomidaviser converts ISU (International Skating Union) notation into formal
+figure skating programs via Anvomidav. It parses element codes, validates scoring
+rules, and generates Anvomidav choreography descriptions.
 
 ## CANONICAL LOCATIONS (UNIVERSAL RULE)
 
@@ -80,13 +87,15 @@ Policy enforcement contracts (k9, dust, lust, must, trust).
 6. **Container images** - MUST use Chainguard base (`cgr.dev/chainguard/wolfi-base:latest` or `cgr.dev/chainguard/static:latest`)
 7. **Container runtime** - Podman, never Docker. Files are `Containerfile`, never `Dockerfile`
 8. **Container orchestration** - `selur-compose`, never `docker-compose`
+9. **ISU rules** - All scoring must reference specific ISU Communications (e.g. 2472 for GOE)
+10. **Anvomidav** - Generated programs must be valid Anvomidav syntax
 
 ## REPOSITORY STRUCTURE
 
 This repo follows the **Dual-Track** architecture:
 
 ```
-[YOUR-REPO-NAME]/
+anvomidaviser/
 ├── 0-AI-MANIFEST.a2ml         # THIS FILE (start here)
 ├── README.adoc                 # High-level orientation (Rich Human)
 ├── ROADMAP.adoc                # Future direction
@@ -95,18 +104,24 @@ This repo follows the **Dual-Track** architecture:
 ├── Justfile                    # Task runner
 ├── Containerfile               # OCI build
 ├── LICENSE                     # Primary license
+├── Cargo.toml                  # Rust CLI project
 ├── src/                        # Source code
+│   ├── main.rs                 # CLI entry point
+│   ├── lib.rs                  # Library root
+│   ├── manifest/               # Manifest parsing (anvomidaviser.toml)
+│   ├── codegen/                # Anvomidav code generation
+│   ├── core/                   # ISU element types, scoring tables
 │   └── interface/              # Verified Interface Seams
-│       ├── abi/                # Idris2 ABI (The Spec)
-│       ├── ffi/                # Zig FFI (The Bridge)
+│       ├── abi/                # Idris2 ABI (ISU scoring proofs)
+│       ├── ffi/                # Zig FFI (C-ABI bridge)
 │       └── generated/          # C Headers (The Result)
 ├── container/                  # Stapeln container ecosystem
 ├── docs/                       # Technical depths
 │   ├── attribution/            # Citations, owners, maintainers (adoc)
 │   ├── architecture/           # Topology, diagrams
-│   ├── theory/                 # Domain theory
+│   ├── theory/                 # ISU rules, scoring domain theory
 │   └── practice/               # Manuals
-├── docs/legal/                  # Legal exhibits and full texts
+├── docs/legal/                 # Legal exhibits and full texts
 └── .machine_readable/          # ALL machine-readable metadata
 ```
 

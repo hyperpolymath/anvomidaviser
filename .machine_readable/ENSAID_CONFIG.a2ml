@@ -89,8 +89,8 @@ version = "1.0.0"
 
 # Example: a custom portfolio for this project
 # [[portfolios.custom]]
-# id = "{{project}}-dev"
-# name = "{{PROJECT_NAME}} Development"
-# description = "Panels for {{PROJECT_NAME}} development"
+# id = "anvomidaviser-dev"
+# name = "anvomidaviser Development"
+# description = "Panels for anvomidaviser development"
 # panels = ["valence-shell", "editor-bridge", "build-dashboard"]
 # default-isolation = "native"

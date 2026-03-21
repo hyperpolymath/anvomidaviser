@@ -5,13 +5,13 @@
 TEMPLATE INSTRUCTIONS (delete this block before publishing)
 ============================================================================
 Replace all {{PLACEHOLDER}} values with your information:
-  {{PROJECT_NAME}}     - Your project name
+  anvomidaviser     - Your project name
   hyperpolymath            - GitHub username or org (e.g., hyperpolymath)
   anvomidaviser             - Repository name
-  {{SECURITY_EMAIL}}   - Security contact email
-  {{PGP_FINGERPRINT}}  - Your PGP key fingerprint (40 chars, no spaces)
-  {{PGP_KEY_URL}}      - URL to your public PGP key
-  {{WEBSITE}}          - Your website/domain
+  j.d.a.jewell@open.ac.uk   - Security contact email
+  TODO  - Your PGP key fingerprint (40 chars, no spaces)
+  TODO      - URL to your public PGP key
+  https://github.com/hyperpolymath/anvomidaviser          - Your website/domain
   2026     - Current year for copyright
 
 Optional: Remove sections that don't apply (e.g., PGP if you don't use it)
@@ -58,19 +58,19 @@ If you cannot use GitHub Security Advisories, you may email us directly:
 
 | | |
 |---|---|
-| **Email** | {{SECURITY_EMAIL}} |
-| **PGP Key** | [Download Public Key]({{PGP_KEY_URL}}) |
-| **Fingerprint** | `{{PGP_FINGERPRINT}}` |
+| **Email** | j.d.a.jewell@open.ac.uk |
+| **PGP Key** | [Download Public Key](TODO) |
+| **Fingerprint** | `TODO` |
 
 ```bash
 # Import our PGP key
-curl -sSL {{PGP_KEY_URL}} | gpg --import
+curl -sSL TODO | gpg --import
 
 # Verify fingerprint
-gpg --fingerprint {{SECURITY_EMAIL}}
+gpg --fingerprint j.d.a.jewell@open.ac.uk
 
 # Encrypt your report
-gpg --armor --encrypt --recipient {{SECURITY_EMAIL}} report.txt
+gpg --armor --encrypt --recipient j.d.a.jewell@open.ac.uk report.txt
 ```
 
 > **⚠️ Important:** Do not report security vulnerabilities through public GitHub issues, pull requests, discussions, or social media.
@@ -348,7 +348,7 @@ To stay informed about security updates:
 
 ## Security Best Practices
 
-When using {{PROJECT_NAME}}, we recommend:
+When using anvomidaviser, we recommend:
 
 ### General
 
@@ -370,7 +370,7 @@ When using {{PROJECT_NAME}}, we recommend:
 
 ## Additional Resources
 
-- [Our PGP Public Key]({{PGP_KEY_URL}})
+- [Our PGP Public Key](TODO)
 - [Security Advisories](https://github.com/hyperpolymath/anvomidaviser/security/advisories)
 - [Changelog](CHANGELOG.md)
 - [Contributing Guidelines](CONTRIBUTING.md)
@@ -383,7 +383,7 @@ When using {{PROJECT_NAME}}, we recommend:
 
 | Purpose | Contact |
 |---------|---------|
-| **Security issues** | [Report via GitHub](https://github.com/hyperpolymath/anvomidaviser/security/advisories/new) or {{SECURITY_EMAIL}} |
+| **Security issues** | [Report via GitHub](https://github.com/hyperpolymath/anvomidaviser/security/advisories/new) or j.d.a.jewell@open.ac.uk |
 | **General questions** | [GitHub Discussions](https://github.com/hyperpolymath/anvomidaviser/discussions) |
 | **Other enquiries** | See [README](README.md) for contact information |
 
@@ -399,7 +399,7 @@ This security policy may be updated from time to time. Significant changes will 
 
 ---
 
-*Thank you for helping keep {{PROJECT_NAME}} and its users safe.* 🛡️
+*Thank you for helping keep anvomidaviser and its users safe.* 🛡️
 
 ---
 

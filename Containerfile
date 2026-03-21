@@ -1,10 +1,10 @@
 # SPDX-License-Identifier: PMPL-1.0-or-later
-# Copyright (c) {{CURRENT_YEAR}} {{AUTHOR}} ({{OWNER}}) <{{AUTHOR_EMAIL}}>
+# Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
 #
-# Containerfile for {{PROJECT_NAME}}
-# Build: podman build -t {{project}}:latest -f Containerfile .
-# Run:   podman run --rm -it {{project}}:latest
-# Seal:  selur seal {{project}}:latest
+# Containerfile for anvomidaviser
+# Build: podman build -t anvomidaviser:latest -f Containerfile .
+# Run:   podman run --rm -it anvomidaviser:latest
+# Seal:  selur seal anvomidaviser:latest
 
 # --- Build stage ---
 FROM cgr.dev/chainguard/wolfi-base:latest AS build
@@ -30,12 +30,12 @@ FROM cgr.dev/chainguard/static:latest
 # Copy built artifact from build stage
 # TODO: Replace with your binary/artifact path
 # Examples:
-#   COPY --from=build /build/target/release/{{project}} /usr/local/bin/
-#   COPY --from=build /build/_build/prod/rel/{{project}} /app/
-#   COPY --from=build /build/zig-out/bin/{{project}} /usr/local/bin/
+#   COPY --from=build /build/target/release/anvomidaviser /usr/local/bin/
+#   COPY --from=build /build/_build/prod/rel/anvomidaviser /app/
+#   COPY --from=build /build/zig-out/bin/anvomidaviser /usr/local/bin/
 
 # Non-root user (chainguard images default to nonroot)
 USER nonroot
 
 # TODO: Replace with your entrypoint
-# ENTRYPOINT ["/usr/local/bin/{{project}}"]
+# ENTRYPOINT ["/usr/local/bin/anvomidaviser"]

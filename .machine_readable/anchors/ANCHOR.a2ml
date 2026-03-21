@@ -5,7 +5,7 @@
 
 [metadata]
 version = "1.0.0"
-last-updated = "{{CURRENT_DATE}}"
+last-updated = "2026-03-21"
 
 [anchor]
 schema = "hyperpolymath.anchor/1"
@@ -19,10 +19,10 @@ purpose = [
 ]
 
 [identity]
-project = "{{PROJECT_NAME}}"
-kind = "{{PROJECT_KIND}}"                # language | library | service | tool
-one-sentence = "{{PROJECT_PURPOSE}}"
-domain = "{{PROJECT_DOMAIN}}"
+project = "anvomidaviser"
+kind = "cli-tool"                # language | library | service | tool
+one-sentence = "Convert ISU notation to formal figure skating programs"
+domain = "figure-skating-notation"
 
 [semantic-authority]
 policy = "canonical"

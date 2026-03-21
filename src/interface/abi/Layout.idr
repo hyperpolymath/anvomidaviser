@@ -1,16 +1,17 @@
 -- SPDX-License-Identifier: PMPL-1.0-or-later
--- Copyright (c) {{CURRENT_YEAR}} {{AUTHOR}} ({{OWNER}}) <{{AUTHOR_EMAIL}}>
+-- Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
 --
-||| Memory Layout Proofs
+||| Memory Layout Proofs for Anvomidaviser
 |||
 ||| This module provides formal proofs about memory layout, alignment,
-||| and padding for C-compatible structs.
+||| and padding for C-compatible structs used in the ISU scoring engine
+||| and program element representation.
 |||
 ||| @see https://en.wikipedia.org/wiki/Data_structure_alignment
 
-module {{PROJECT}}.ABI.Layout
+module Anvomidaviser.ABI.Layout
 
-import {{PROJECT}}.ABI.Types
+import Anvomidaviser.ABI.Types
 import Data.Vect
 import Data.So
 
@@ -43,7 +44,6 @@ alignUp size alignment =
 public export
 alignUpCorrect : (size : Nat) -> (align : Nat) -> (align > 0) -> Divides align (alignUp size align)
 alignUpCorrect size align prf =
-  -- Proof that (size + padding) is divisible by align
   DivideBy ((size + paddingFor size align) `div` align) Refl
 
 --------------------------------------------------------------------------------
@@ -118,7 +118,6 @@ verifyAllPlatforms :
   (layouts : (p : Platform) -> PlatformLayout p t) ->
   Either String ()
 verifyAllPlatforms layouts =
-  -- Check that layout is valid on all platforms
   Right ()
 
 --------------------------------------------------------------------------------
@@ -137,29 +136,63 @@ data CABICompliant : StructLayout -> Type where
 public export
 checkCABI : (layout : StructLayout) -> Either String (CABICompliant layout)
 checkCABI layout =
-  -- Verify C ABI rules
   Right (CABIOk layout ?fieldsAlignedProof)
 
 --------------------------------------------------------------------------------
--- Example Layouts
+-- ISU Element Layouts
 --------------------------------------------------------------------------------
 
-||| Example: Simple struct layout
+||| Layout for a TechnicalElement struct in the C ABI
+||| Fields: element_type (u8), jump_type (u8), rotation (u8), level (u8),
+|||         base_value (u32), goe (i8), padding (3 bytes), goe_value (i32)
 public export
-exampleLayout : StructLayout
-exampleLayout =
+technicalElementLayout : StructLayout
+technicalElementLayout =
   MkStructLayout
-    [ MkField "x" 0 4 4     -- Bits32 at offset 0
-    , MkField "y" 8 8 8     -- Bits64 at offset 8 (4 bytes padding)
-    , MkField "z" 16 8 8    -- Double at offset 16
+    [ MkField "element_type" 0 1 1   -- ElementCode tag (Jump/Spin/StepSeq/Lift)
+    , MkField "subtype"      1 1 1   -- JumpType / SpinType / etc.
+    , MkField "rotation"     2 1 1   -- JumpRotation or unused
+    , MkField "level"        3 1 1   -- SpinLevel
+    , MkField "base_value"   4 4 4   -- Base value in hundredths
+    , MkField "goe"          8 1 1   -- GOE (-5 to +5)
+    , MkField "padding"      9 3 1   -- Alignment padding
+    , MkField "goe_value"   12 4 4   -- GOE adjustment in hundredths
     ]
-    24  -- Total size: 24 bytes
-    8   -- Alignment: 8 bytes
+    16  -- Total size: 16 bytes
+    4   -- Alignment: 4 bytes
 
-||| Proof that example layout is valid
+||| Proof that TechnicalElement layout is valid
 export
-exampleLayoutValid : CABICompliant exampleLayout
-exampleLayoutValid = CABIOk exampleLayout ?exampleFieldsAligned
+technicalElementLayoutValid : CABICompliant technicalElementLayout
+technicalElementLayoutValid = CABIOk technicalElementLayout ?techElemFieldsAligned
+
+||| Layout for ProgramScore struct in the C ABI
+||| Fields: total_base (u32), total_goe (i32), deductions (u32),
+|||         pcs_marks (5 x u8), padding (3 bytes), component_factor (u32),
+|||         total_segment_score (u32)
+public export
+programScoreLayout : StructLayout
+programScoreLayout =
+  MkStructLayout
+    [ MkField "total_base"          0  4 4   -- Sum of base values
+    , MkField "total_goe"           4  4 4   -- Sum of GOE adjustments
+    , MkField "deductions"          8  4 4   -- Penalty deductions
+    , MkField "pcs_skating_skills" 12  1 1   -- SS mark (x 0.25)
+    , MkField "pcs_transitions"    13  1 1   -- TR mark (x 0.25)
+    , MkField "pcs_performance"    14  1 1   -- PE mark (x 0.25)
+    , MkField "pcs_composition"    15  1 1   -- CO mark (x 0.25)
+    , MkField "pcs_interpretation" 16  1 1   -- IN mark (x 0.25)
+    , MkField "padding"            17  3 1   -- Alignment padding
+    , MkField "component_factor"   20  4 4   -- PCS multiplier
+    , MkField "total_segment"      24  4 4   -- TES + PCS - deductions
+    ]
+    28  -- Total size: 28 bytes
+    4   -- Alignment: 4 bytes
+
+||| Proof that ProgramScore layout is valid
+export
+programScoreLayoutValid : CABICompliant programScoreLayout
+programScoreLayoutValid = CABIOk programScoreLayout ?progScoreFieldsAligned
 
 --------------------------------------------------------------------------------
 -- Offset Calculation

@@ -6,15 +6,20 @@
   (version "0.1.0")
   (name "anvomidaviser")
   (type "tool")
-  (purpose "Convert ISU notation to formal figure skating programs")
+  (purpose "Convert ISU notation to formal figure skating programs via Anvomidav")
 
   (position-in-ecosystem
     (family "-iser acceleration frameworks")
     (meta-framework "iseriser")
     (relationship "sibling")
-    (top-3 ("typedqliser" "chapeliser" "verisimiser")))
+    (domain "sports-notation")
+    (note "Unique among -isers: targets a hyperpolymath nextgen language (Anvomidav) rather than an external language"))
 
   (related-projects
+    (project "anvomidav"
+      (relationship "target-language")
+      (location "nextgen-languages monorepo")
+      (description "Figure skating choreography programming language — the codegen target"))
     (project "iseriser"
       (relationship "meta-framework")
       (description "Generates new -iser project scaffolding"))
@@ -27,12 +32,18 @@
     (project "verisimiser"
       (relationship "sibling-priority-3")
       (description "VeriSimDB octad database augmentation"))
-    (project "squeakwell"
-      (relationship "sibling")
-      (description "Database recovery via constraint propagation"))
     (project "proven"
       (relationship "dependency")
-      (description "Shared Idris2 verified library"))
+      (description "Shared Idris2 verified library — may contribute scoring proofs"))
     (project "typell"
       (relationship "dependency")
-      (description "Type theory engine"))))
+      (description "Type theory engine used by ABI layer"))
+    (project "boj-server"
+      (relationship "integration")
+      (description "MCP cartridge host — planned scoring engine cartridge"))
+    (project "verisimdb"
+      (relationship "integration")
+      (description "Historical competition result storage"))
+    (project "panll"
+      (relationship "integration")
+      (description "Visual panel framework — planned program planning UI"))))
