@@ -92,13 +92,13 @@ fn check_combination_rules(
 
     // Check each combination length
     for combo in &combinations {
-        if let ElementCode::JumpCombination(jumps) = combo {
-            if jumps.len() > 3 {
-                violations.push(Violation::CombinationTooLong {
-                    element: combo.notation(),
-                    jump_count: jumps.len(),
-                });
-            }
+        if let ElementCode::JumpCombination(jumps) = combo
+            && jumps.len() > 3
+        {
+            violations.push(Violation::CombinationTooLong {
+                element: combo.notation(),
+                jump_count: jumps.len(),
+            });
         }
     }
 
@@ -166,12 +166,7 @@ mod tests {
 
     /// Helper: create a jump combination element.
     fn combo(jumps: Vec<(u8, JumpType)>) -> ElementCode {
-        ElementCode::JumpCombination(
-            jumps
-                .into_iter()
-                .map(|(r, jt)| Jump::new(r, jt))
-                .collect(),
-        )
+        ElementCode::JumpCombination(jumps.into_iter().map(|(r, jt)| Jump::new(r, jt)).collect())
     }
 
     /// Helper: create a spin element.
@@ -195,7 +190,11 @@ mod tests {
             combo(vec![(3, JumpType::Salchow), (2, JumpType::Toeloop)]),
             solo_jump(2, JumpType::Axel),
             solo_jump(3, JumpType::Loop),
-            combo(vec![(2, JumpType::Axel), (1, JumpType::Loop), (2, JumpType::Salchow)]),
+            combo(vec![
+                (2, JumpType::Axel),
+                (1, JumpType::Loop),
+                (2, JumpType::Salchow),
+            ]),
             solo_jump(2, JumpType::Lutz),
             spin(),
             spin(),
@@ -204,7 +203,11 @@ mod tests {
             step(),
         ];
         let violations = validate_program(&elements, Segment::Free);
-        assert!(violations.is_empty(), "Expected no violations, got: {:?}", violations);
+        assert!(
+            violations.is_empty(),
+            "Expected no violations, got: {:?}",
+            violations
+        );
     }
 
     #[test]
@@ -217,7 +220,13 @@ mod tests {
         ];
         let violations = validate_program(&elements, Segment::Free);
         assert!(
-            violations.iter().any(|v| matches!(v, Violation::ZayakRule { jump_type: JumpType::Lutz, count: 3 })),
+            violations.iter().any(|v| matches!(
+                v,
+                Violation::ZayakRule {
+                    jump_type: JumpType::Lutz,
+                    count: 3
+                }
+            )),
             "Expected Zayak violation for Lutz, got: {:?}",
             violations
         );
@@ -235,7 +244,11 @@ mod tests {
             .iter()
             .filter(|v| matches!(v, Violation::ZayakRule { .. }))
             .collect();
-        assert!(zayak_violations.is_empty(), "Expected no Zayak violations, got: {:?}", zayak_violations);
+        assert!(
+            zayak_violations.is_empty(),
+            "Expected no Zayak violations, got: {:?}",
+            zayak_violations
+        );
     }
 
     #[test]
@@ -269,7 +282,13 @@ mod tests {
         ];
         let violations = validate_program(&elements, Segment::Free);
         assert!(
-            violations.iter().any(|v| matches!(v, Violation::TooManyJumpElements { found: 8, maximum: 7 })),
+            violations.iter().any(|v| matches!(
+                v,
+                Violation::TooManyJumpElements {
+                    found: 8,
+                    maximum: 7
+                }
+            )),
             "Expected TooManyJumpElements, got: {:?}",
             violations
         );
@@ -286,7 +305,13 @@ mod tests {
         ];
         let violations = validate_program(&elements, Segment::Short);
         assert!(
-            violations.iter().any(|v| matches!(v, Violation::TooManyJumpElements { found: 4, maximum: 3 })),
+            violations.iter().any(|v| matches!(
+                v,
+                Violation::TooManyJumpElements {
+                    found: 4,
+                    maximum: 3
+                }
+            )),
             "Expected TooManyJumpElements for short program, got: {:?}",
             violations
         );
@@ -303,7 +328,9 @@ mod tests {
         ])];
         let violations = validate_program(&elements, Segment::Free);
         assert!(
-            violations.iter().any(|v| matches!(v, Violation::CombinationTooLong { .. })),
+            violations
+                .iter()
+                .any(|v| matches!(v, Violation::CombinationTooLong { .. })),
             "Expected CombinationTooLong, got: {:?}",
             violations
         );
@@ -319,7 +346,13 @@ mod tests {
         ];
         let violations = validate_program(&elements, Segment::Short);
         assert!(
-            violations.iter().any(|v| matches!(v, Violation::TooManyCombinations { found: 2, maximum: 1 })),
+            violations.iter().any(|v| matches!(
+                v,
+                Violation::TooManyCombinations {
+                    found: 2,
+                    maximum: 1
+                }
+            )),
             "Expected TooManyCombinations, got: {:?}",
             violations
         );

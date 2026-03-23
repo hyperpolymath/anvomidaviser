@@ -79,8 +79,8 @@ fn default_goe_table() -> String {
 /// # Errors
 /// Returns an error if the file cannot be read or parsed as valid TOML.
 pub fn load_manifest(path: &str) -> Result<Manifest> {
-    let content =
-        std::fs::read_to_string(path).with_context(|| format!("Failed to read manifest: {}", path))?;
+    let content = std::fs::read_to_string(path)
+        .with_context(|| format!("Failed to read manifest: {}", path))?;
     toml::from_str(&content).with_context(|| format!("Failed to parse manifest: {}", path))
 }
 

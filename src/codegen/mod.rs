@@ -102,13 +102,19 @@ fn generate_program_report(manifest: &Manifest, score: &ProgramScore) -> String 
 
     report.push_str("[program]\n");
     report.push_str(&format!("name = \"{}\"\n", manifest.project.name));
-    report.push_str(&format!("discipline = \"{}\"\n", manifest.program.discipline));
+    report.push_str(&format!(
+        "discipline = \"{}\"\n",
+        manifest.program.discipline
+    ));
     report.push_str(&format!("segment = \"{}\"\n", manifest.program.segment));
     report.push_str(&format!("level = \"{}\"\n", manifest.program.level));
-    report.push_str(&format!("scoring-season = \"{}\"\n\n", manifest.scoring.goe_table));
+    report.push_str(&format!(
+        "scoring-season = \"{}\"\n\n",
+        manifest.scoring.goe_table
+    ));
 
     for (i, elem) in score.elements.iter().enumerate() {
-        report.push_str(&format!("[[element]]\n"));
+        report.push_str("[[element]]\n");
         report.push_str(&format!("index = {}\n", i + 1));
         report.push_str(&format!("code = \"{}\"\n", elem.element.notation()));
         report.push_str(&format!("base-value = {:.2}\n", elem.base_value));
@@ -122,9 +128,9 @@ fn generate_program_report(manifest: &Manifest, score: &ProgramScore) -> String 
     report.push_str(&format!("violation-count = {}\n", score.violations.len()));
 
     if !score.violations.is_empty() {
-        report.push_str("\n");
+        report.push('\n');
         for (i, v) in score.violations.iter().enumerate() {
-            report.push_str(&format!("[[violation]]\n"));
+            report.push_str("[[violation]]\n");
             report.push_str(&format!("index = {}\n", i + 1));
             report.push_str(&format!("description = \"{}\"\n\n", v));
         }

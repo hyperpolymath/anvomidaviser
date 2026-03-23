@@ -19,12 +19,10 @@ use crate::abi::{ElementCode, GOE, Jump, JumpType, Spin, SpinType, StepSequence,
 pub fn base_value(element: &ElementCode) -> f64 {
     match element {
         ElementCode::SoloJump(jump) => jump_base_value(jump),
-        ElementCode::JumpCombination(jumps) => {
-            jumps.iter().map(|j| jump_base_value(j)).sum()
-        }
+        ElementCode::JumpCombination(jumps) => jumps.iter().map(jump_base_value).sum(),
         ElementCode::JumpSequence(jumps) => {
             // Jump sequences receive 80% of the combined base value
-            let total: f64 = jumps.iter().map(|j| jump_base_value(j)).sum();
+            let total: f64 = jumps.iter().map(jump_base_value).sum();
             (total * 0.8 * 100.0).round() / 100.0
         }
         ElementCode::Spin(spin) => spin_base_value(spin),
@@ -90,7 +88,8 @@ fn jump_base_value(jump: &Jump) -> f64 {
 fn spin_base_value(spin: &Spin) -> f64 {
     // Base values vary by spin type and level (0-4).
     // Simplified table covering the most common spins.
-    let base = match &spin.spin_type {
+
+    match &spin.spin_type {
         SpinType::Single(_) => match spin.level {
             0 => 0.00, // No base value for level 0 (base level)
             1 => 1.20,
@@ -123,8 +122,7 @@ fn spin_base_value(spin: &Spin) -> f64 {
             4 => 3.50,
             _ => 0.00,
         },
-    };
-    base
+    }
 }
 
 /// Base value for a step or choreographic sequence, based on type and level.

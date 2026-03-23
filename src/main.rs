@@ -1,3 +1,17 @@
+#![allow(
+    dead_code,
+    clippy::too_many_arguments,
+    clippy::manual_strip,
+    clippy::if_same_then_else,
+    clippy::vec_init_then_push,
+    clippy::upper_case_acronyms,
+    clippy::format_in_format_args,
+    clippy::enum_variant_names,
+    clippy::module_inception,
+    clippy::doc_lazy_continuation,
+    clippy::manual_clamp,
+    clippy::type_complexity
+)]
 #![forbid(unsafe_code)]
 // SPDX-License-Identifier: PMPL-1.0-or-later
 // Copyright (c) 2026 Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
@@ -83,27 +97,39 @@ fn main() -> Result<()> {
             // Also run ISU rule validation
             let codes: Vec<String> = m.elements.iter().map(|e| e.code.clone()).collect();
             let elements = codegen::parser::parse_program(&codes)?;
-            let violations =
-                codegen::validator::validate_program(&elements, m.program.segment);
+            let violations = codegen::validator::validate_program(&elements, m.program.segment);
             if violations.is_empty() {
                 println!("Valid: {} — no ISU rule violations", m.project.name);
             } else {
-                println!("Program '{}' has {} violation(s):", m.project.name, violations.len());
+                println!(
+                    "Program '{}' has {} violation(s):",
+                    m.project.name,
+                    violations.len()
+                );
                 for v in &violations {
                     println!("  - {}", v);
                 }
             }
         }
-        Commands::Generate { manifest: path, output } => {
+        Commands::Generate {
+            manifest: path,
+            output,
+        } => {
             let m = manifest::load_manifest(&path)?;
             manifest::validate(&m)?;
             codegen::generate_all(&m, &output)?;
         }
-        Commands::Build { manifest: path, release } => {
+        Commands::Build {
+            manifest: path,
+            release,
+        } => {
             let m = manifest::load_manifest(&path)?;
             codegen::build(&m, release)?;
         }
-        Commands::Run { manifest: path, args } => {
+        Commands::Run {
+            manifest: path,
+            args,
+        } => {
             let m = manifest::load_manifest(&path)?;
             codegen::run(&m, &args)?;
         }

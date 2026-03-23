@@ -261,9 +261,11 @@ impl ElementCode {
     pub fn notation(&self) -> String {
         match self {
             ElementCode::SoloJump(j) => j.notation(),
-            ElementCode::JumpCombination(jumps) => {
-                jumps.iter().map(|j| j.notation()).collect::<Vec<_>>().join("+")
-            }
+            ElementCode::JumpCombination(jumps) => jumps
+                .iter()
+                .map(|j| j.notation())
+                .collect::<Vec<_>>()
+                .join("+"),
             ElementCode::JumpSequence(jumps) => {
                 let parts: Vec<String> = jumps.iter().map(|j| j.notation()).collect();
                 format!("{}+SEQ", parts.join("+"))
@@ -287,9 +289,7 @@ impl ElementCode {
     pub fn jumps(&self) -> Vec<&Jump> {
         match self {
             ElementCode::SoloJump(j) => vec![j],
-            ElementCode::JumpCombination(js) | ElementCode::JumpSequence(js) => {
-                js.iter().collect()
-            }
+            ElementCode::JumpCombination(js) | ElementCode::JumpSequence(js) => js.iter().collect(),
             _ => vec![],
         }
     }

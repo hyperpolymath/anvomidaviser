@@ -12,7 +12,7 @@
 //
 // Reference: ISU Technical Panel Handbook (Single & Pair Skating), 2024-2025 season.
 
-use anyhow::{bail, Result};
+use anyhow::{Result, bail};
 
 use crate::abi::{
     ElementCode, Jump, JumpType, Spin, SpinPosition, SpinType, StepSequence, StepType,
@@ -138,7 +138,7 @@ fn parse_jump_combination(code: &str) -> Result<ElementCode> {
     let parts: Vec<&str> = code.split('+').collect();
 
     // Check for SEQ marker (jump sequence, not combination)
-    let is_sequence = parts.last().map_or(false, |p| p.trim() == "SEQ");
+    let is_sequence = parts.last().is_some_and(|p| p.trim() == "SEQ");
     let jump_parts = if is_sequence {
         &parts[..parts.len() - 1]
     } else {

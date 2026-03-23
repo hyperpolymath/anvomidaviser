@@ -26,9 +26,8 @@ fn test_parse_jump_solo_all_types() {
     ];
 
     for (code, expected_rot, expected_type) in test_cases {
-        let elem = parser::parse_element(code).unwrap_or_else(|e| {
-            panic!("Failed to parse '{}': {}", code, e)
-        });
+        let elem = parser::parse_element(code)
+            .unwrap_or_else(|e| panic!("Failed to parse '{}': {}", code, e));
         match elem {
             ElementCode::SoloJump(j) => {
                 assert_eq!(j.rotations, expected_rot, "Wrong rotations for '{}'", code);
@@ -52,9 +51,8 @@ fn test_parse_jump_all_rotations() {
             ("A", JumpType::Axel),
         ] {
             let code = format!("{}{}", rot, code_suffix);
-            let elem = parser::parse_element(&code).unwrap_or_else(|e| {
-                panic!("Failed to parse '{}': {}", code, e)
-            });
+            let elem = parser::parse_element(&code)
+                .unwrap_or_else(|e| panic!("Failed to parse '{}': {}", code, e));
             match elem {
                 ElementCode::SoloJump(j) => {
                     assert_eq!(j.rotations, rot);
@@ -110,9 +108,15 @@ fn test_zayak_rule_three_triple_lutzes_violates() {
     ];
 
     let violations = validator::validate_program(&elements, Segment::Free);
-    let zayak = violations
-        .iter()
-        .find(|v| matches!(v, Violation::ZayakRule { jump_type: JumpType::Lutz, .. }));
+    let zayak = violations.iter().find(|v| {
+        matches!(
+            v,
+            Violation::ZayakRule {
+                jump_type: JumpType::Lutz,
+                ..
+            }
+        )
+    });
     assert!(zayak.is_some(), "Expected Zayak violation for triple Lutz");
 
     if let Some(Violation::ZayakRule { count, .. }) = zayak {
@@ -132,7 +136,9 @@ fn test_zayak_rule_two_triple_lutzes_passes() {
 
     let violations = validator::validate_program(&elements, Segment::Free);
     assert!(
-        !violations.iter().any(|v| matches!(v, Violation::ZayakRule { .. })),
+        !violations
+            .iter()
+            .any(|v| matches!(v, Violation::ZayakRule { .. })),
         "Two triple Lutzes should not trigger Zayak"
     );
 }
@@ -149,7 +155,9 @@ fn test_zayak_rule_ignores_doubles() {
 
     let violations = validator::validate_program(&elements, Segment::Free);
     assert!(
-        !violations.iter().any(|v| matches!(v, Violation::ZayakRule { .. })),
+        !violations
+            .iter()
+            .any(|v| matches!(v, Violation::ZayakRule { .. })),
         "Doubles should not trigger Zayak rule"
     );
 }
@@ -212,14 +220,25 @@ fn test_element_count_limit_free_skate_7_jumps_ok() {
         })
         .collect();
     // Add required spins and steps
-    elements.push(ElementCode::Spin(Spin::new(SpinType::ChangeFootCombination, 4)));
+    elements.push(ElementCode::Spin(Spin::new(
+        SpinType::ChangeFootCombination,
+        4,
+    )));
     elements.push(ElementCode::Spin(Spin::new(SpinType::Combination, 3)));
-    elements.push(ElementCode::Spin(Spin::new(SpinType::Flying(SpinPosition::Sit), 3)));
-    elements.push(ElementCode::Step(StepSequence::new(StepType::StepSequence, 3)));
+    elements.push(ElementCode::Spin(Spin::new(
+        SpinType::Flying(SpinPosition::Sit),
+        3,
+    )));
+    elements.push(ElementCode::Step(StepSequence::new(
+        StepType::StepSequence,
+        3,
+    )));
 
     let violations = validator::validate_program(&elements, Segment::Free);
     assert!(
-        !violations.iter().any(|v| matches!(v, Violation::TooManyJumpElements { .. })),
+        !violations
+            .iter()
+            .any(|v| matches!(v, Violation::TooManyJumpElements { .. })),
         "7 jumps in free skate should be valid"
     );
 }
@@ -242,7 +261,13 @@ fn test_element_count_limit_free_skate_8_jumps_violates() {
 
     let violations = validator::validate_program(&elements, Segment::Free);
     assert!(
-        violations.iter().any(|v| matches!(v, Violation::TooManyJumpElements { found: 8, maximum: 7 })),
+        violations.iter().any(|v| matches!(
+            v,
+            Violation::TooManyJumpElements {
+                found: 8,
+                maximum: 7
+            }
+        )),
         "8 jumps in free skate should violate"
     );
 }
@@ -259,7 +284,13 @@ fn test_element_count_limit_short_program() {
 
     let violations = validator::validate_program(&elements, Segment::Short);
     assert!(
-        violations.iter().any(|v| matches!(v, Violation::TooManyJumpElements { found: 4, maximum: 3 })),
+        violations.iter().any(|v| matches!(
+            v,
+            Violation::TooManyJumpElements {
+                found: 4,
+                maximum: 3
+            }
+        )),
         "4 jumps in short program should violate"
     );
 }
@@ -272,18 +303,18 @@ fn test_element_count_limit_short_program() {
 fn test_full_free_skate_program_parsing_and_scoring() {
     // A realistic senior women's free skate program (simplified)
     let codes = vec![
-        "3Lz+3T".to_string(),   // Jump combination
-        "3F".to_string(),        // Solo jump
-        "CCoSp4".to_string(),    // Change foot combination spin
-        "StSq3".to_string(),     // Step sequence
-        "3Lo".to_string(),       // Solo jump
-        "2A+2T".to_string(),     // Jump combination
-        "3S".to_string(),        // Solo jump
-        "FSSp3".to_string(),     // Flying sit spin
-        "2A".to_string(),        // Solo jump (double Axel)
+        "3Lz+3T".to_string(),     // Jump combination
+        "3F".to_string(),         // Solo jump
+        "CCoSp4".to_string(),     // Change foot combination spin
+        "StSq3".to_string(),      // Step sequence
+        "3Lo".to_string(),        // Solo jump
+        "2A+2T".to_string(),      // Jump combination
+        "3S".to_string(),         // Solo jump
+        "FSSp3".to_string(),      // Flying sit spin
+        "2A".to_string(),         // Solo jump (double Axel)
         "3Lz+2T+2Lo".to_string(), // Triple combination
-        "CoSp4".to_string(),     // Combination spin
-        "ChSq1".to_string(),     // Choreographic sequence
+        "CoSp4".to_string(),      // Combination spin
+        "ChSq1".to_string(),      // Choreographic sequence
     ];
 
     // Parse all elements
@@ -292,8 +323,14 @@ fn test_full_free_skate_program_parsing_and_scoring() {
 
     // Count element types
     let jump_count = elements.iter().filter(|e| e.is_jump_element()).count();
-    let spin_count = elements.iter().filter(|e| matches!(e, ElementCode::Spin(_))).count();
-    let step_count = elements.iter().filter(|e| matches!(e, ElementCode::Step(_))).count();
+    let spin_count = elements
+        .iter()
+        .filter(|e| matches!(e, ElementCode::Spin(_)))
+        .count();
+    let step_count = elements
+        .iter()
+        .filter(|e| matches!(e, ElementCode::Step(_)))
+        .count();
 
     assert_eq!(jump_count, 7, "Should have 7 jump elements");
     assert_eq!(spin_count, 3, "Should have 3 spins");
