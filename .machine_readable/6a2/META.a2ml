@@ -1,56 +1,27 @@
-;; SPDX-License-Identifier: PMPL-1.0-or-later
-;; Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
-;; META.a2ml — Meta-level information for anvomidaviser
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+#
+# META.a2ml — Anvomidaviser meta-level information
+[metadata]
+version = "0.1.0"
+last-updated = "2026-03-21"
 
-(meta
-  (version "0.1.0")
-  (last-updated "2026-03-21")
+[project-info]
+license = "PMPL-1.0-or-later"
+author = "Jonathan D.A. Jewell (hyperpolymath)"
 
-  (architecture-decisions
-    (adr "001-iser-pattern"
-      (status "accepted")
-      (context "Need to make Anvomidav choreography language accessible to coaches and skaters")
-      (decision "Use manifest-driven code generation: user describes program in TOML, tool generates Anvomidav")
-      (consequences "Coaches write zero Anvomidav code; complexity hidden behind ISU-familiar notation"))
+[architecture-decisions]
+decisions = [
+  # No ADRs recorded
+]
 
-    (adr "002-abi-ffi-standard"
-      (status "accepted")
-      (context "Need verified interop between Rust CLI, ISU scoring engine, and Anvomidav codegen")
-      (decision "Idris2 ABI for formal scoring rule proofs, Zig FFI for C-ABI bridge")
-      (consequences "Compile-time proof that GOE ranges, Zayak rule, element counts are correct"))
+[development-practices]
+versioning = "SemVer"
+documentation = "AsciiDoc"
+build-tool = "just"
 
-    (adr "003-isu-rules-as-types"
-      (status "accepted")
-      (context "ISU scoring rules are complex and change with each season's Communications")
-      (decision "Encode ISU rules as dependent types in Idris2 — GOE as bounded int, PCS as stepped decimal")
-      (consequences "Rule violations are type errors; impossible to produce invalid scores"))
-
-    (adr "004-anvomidav-target"
-      (status "accepted")
-      (context "Unlike other -isers that target general-purpose languages, anvomidaviser targets Anvomidav")
-      (decision "Generate Anvomidav formal choreography descriptions with timing, transitions, and rink positions")
-      (consequences "Output is domain-specific and human-readable for skating community"))
-
-    (adr "005-rsr-template"
-      (status "accepted")
-      (context "Need consistent project structure across 29+ -iser repos")
-      (decision "All repos cloned from rsr-template-repo with full CI/CD and governance")
-      (consequences "17 workflows, SECURITY.md, CONTRIBUTING, bot directives from day one")))
-
-  (development-practices
-    (language "Rust" (purpose "CLI orchestration and ISU protocol parsing"))
-    (language "Idris2" (purpose "ABI formal proofs of ISU scoring rules"))
-    (language "Zig" (purpose "FFI C-ABI bridge for scoring engine"))
-    (language "Anvomidav" (purpose "Target language — formal choreography notation"))
-    (build-tool "cargo")
-    (ci "GitHub Actions (17 workflows)"))
-
-  (design-rationale
-    (principle "ISU-native input"
-      (explanation "Input uses ISU element codes (3Lz, CCoSp4, StSq3) — no new notation to learn"))
-    (principle "Formally verified scoring"
-      (explanation "Idris2 dependent types prove scoring rule correctness at compile time"))
-    (principle "Anvomidav-native output"
-      (explanation "Output is valid Anvomidav — the first programming language for figure skating choreography"))
-    (principle "Season-updatable"
-      (explanation "ISU rules change annually; base value tables and rule checks are data-driven, not hardcoded"))))
+[maintenance-axes]
+scoping-first = true
+axis-1 = "must > intend > like"
+axis-2 = "corrective > adaptive > perfective"
+axis-3 = "systems > compliance > effects"
