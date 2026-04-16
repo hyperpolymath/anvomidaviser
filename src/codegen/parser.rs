@@ -202,7 +202,7 @@ mod tests {
 
     #[test]
     fn test_parse_solo_jump_triple_lutz() {
-        let elem = parse_element("3Lz").unwrap();
+        let elem = parse_element("3Lz").expect("TODO: handle error");
         match elem {
             ElementCode::SoloJump(j) => {
                 assert_eq!(j.rotations, 3);
@@ -215,7 +215,7 @@ mod tests {
 
     #[test]
     fn test_parse_solo_jump_double_axel() {
-        let elem = parse_element("2A").unwrap();
+        let elem = parse_element("2A").expect("TODO: handle error");
         match elem {
             ElementCode::SoloJump(j) => {
                 assert_eq!(j.rotations, 2);
@@ -227,7 +227,7 @@ mod tests {
 
     #[test]
     fn test_parse_solo_jump_quad_toeloop() {
-        let elem = parse_element("4T").unwrap();
+        let elem = parse_element("4T").expect("TODO: handle error");
         match elem {
             ElementCode::SoloJump(j) => {
                 assert_eq!(j.rotations, 4);
@@ -239,7 +239,7 @@ mod tests {
 
     #[test]
     fn test_parse_combination_3lz_3t() {
-        let elem = parse_element("3Lz+3T").unwrap();
+        let elem = parse_element("3Lz+3T").expect("TODO: handle error");
         match elem {
             ElementCode::JumpCombination(jumps) => {
                 assert_eq!(jumps.len(), 2);
@@ -252,7 +252,7 @@ mod tests {
 
     #[test]
     fn test_parse_triple_combination() {
-        let elem = parse_element("3F+2T+2Lo").unwrap();
+        let elem = parse_element("3F+2T+2Lo").expect("TODO: handle error");
         match elem {
             ElementCode::JumpCombination(jumps) => {
                 assert_eq!(jumps.len(), 3);
@@ -266,7 +266,7 @@ mod tests {
 
     #[test]
     fn test_parse_spin_ccosp4() {
-        let elem = parse_element("CCoSp4").unwrap();
+        let elem = parse_element("CCoSp4").expect("TODO: handle error");
         match elem {
             ElementCode::Spin(s) => {
                 assert_eq!(s.spin_type, SpinType::ChangeFootCombination);
@@ -279,7 +279,7 @@ mod tests {
 
     #[test]
     fn test_parse_spin_fssp3() {
-        let elem = parse_element("FSSp3").unwrap();
+        let elem = parse_element("FSSp3").expect("TODO: handle error");
         match elem {
             ElementCode::Spin(s) => {
                 assert_eq!(s.spin_type, SpinType::Flying(SpinPosition::Sit));
@@ -291,7 +291,7 @@ mod tests {
 
     #[test]
     fn test_parse_step_sequence() {
-        let elem = parse_element("StSq3").unwrap();
+        let elem = parse_element("StSq3").expect("TODO: handle error");
         match elem {
             ElementCode::Step(st) => {
                 assert_eq!(st.step_type, StepType::StepSequence);
@@ -304,7 +304,7 @@ mod tests {
 
     #[test]
     fn test_parse_choreographic_sequence() {
-        let elem = parse_element("ChSq1").unwrap();
+        let elem = parse_element("ChSq1").expect("TODO: handle error");
         match elem {
             ElementCode::Step(st) => {
                 assert_eq!(st.step_type, StepType::ChoreographicSequence);
@@ -324,7 +324,7 @@ mod tests {
 
     #[test]
     fn test_parse_jump_sequence_with_seq_marker() {
-        let elem = parse_element("2A+2T+SEQ").unwrap();
+        let elem = parse_element("2A+2T+SEQ").expect("TODO: handle error");
         match elem {
             ElementCode::JumpSequence(jumps) => {
                 assert_eq!(jumps.len(), 2);
@@ -344,7 +344,7 @@ mod tests {
             "StSq3".to_string(),
             "2A".to_string(),
         ];
-        let elements = parse_program(&codes).unwrap();
+        let elements = parse_program(&codes).expect("TODO: handle error");
         assert_eq!(elements.len(), 5);
         assert!(elements[0].is_jump_element());
         assert!(elements[1].is_jump_element());
