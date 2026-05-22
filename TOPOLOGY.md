@@ -1,4 +1,4 @@
-<!-- SPDX-License-Identifier: PMPL-1.0-or-later -->
+<!-- SPDX-License-Identifier: MPL-2.0 -->
 # anvomidaviser — Repository Topology
 
 ## Overview
@@ -16,7 +16,7 @@ anvomidaviser/
 ├── contractile.just                 # Contractile task recipes
 ├── CONTRIBUTING.adoc                # Contribution guide
 ├── Justfile                         # Primary task runner
-├── LICENSE                          # PMPL-1.0-or-later
+├── LICENSE                          # MPL-2.0
 ├── README.adoc                      # Project overview
 ├── ROADMAP.adoc                     # Phased development plan
 ├── SECURITY.md                      # Security policy
