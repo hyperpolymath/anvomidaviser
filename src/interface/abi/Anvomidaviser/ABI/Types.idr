@@ -15,6 +15,7 @@ module Anvomidaviser.ABI.Types
 import Data.Bits
 import Data.So
 import Data.Vect
+import Decidable.Equality
 
 %default total
 
@@ -27,13 +28,10 @@ public export
 data Platform = Linux | Windows | MacOS | BSD | WASM
 
 ||| Compile-time platform detection
-||| This will be set during compilation based on target
+||| Default target platform; override with compiler flags at the FFI layer.
 public export
 thisPlatform : Platform
-thisPlatform =
-  %runElab do
-    -- Platform detection logic
-    pure Linux  -- Default, override with compiler flags
+thisPlatform = Linux
 
 --------------------------------------------------------------------------------
 -- ISU Element Types
@@ -194,7 +192,36 @@ DecEq Result where
   decEq OutOfMemory OutOfMemory = Yes Refl
   decEq NullPointer NullPointer = Yes Refl
   decEq RuleViolation RuleViolation = Yes Refl
-  decEq _ _ = No absurd
+  decEq Ok Error = No (\case Refl impossible)
+  decEq Ok InvalidParam = No (\case Refl impossible)
+  decEq Ok OutOfMemory = No (\case Refl impossible)
+  decEq Ok NullPointer = No (\case Refl impossible)
+  decEq Ok RuleViolation = No (\case Refl impossible)
+  decEq Error Ok = No (\case Refl impossible)
+  decEq Error InvalidParam = No (\case Refl impossible)
+  decEq Error OutOfMemory = No (\case Refl impossible)
+  decEq Error NullPointer = No (\case Refl impossible)
+  decEq Error RuleViolation = No (\case Refl impossible)
+  decEq InvalidParam Ok = No (\case Refl impossible)
+  decEq InvalidParam Error = No (\case Refl impossible)
+  decEq InvalidParam OutOfMemory = No (\case Refl impossible)
+  decEq InvalidParam NullPointer = No (\case Refl impossible)
+  decEq InvalidParam RuleViolation = No (\case Refl impossible)
+  decEq OutOfMemory Ok = No (\case Refl impossible)
+  decEq OutOfMemory Error = No (\case Refl impossible)
+  decEq OutOfMemory InvalidParam = No (\case Refl impossible)
+  decEq OutOfMemory NullPointer = No (\case Refl impossible)
+  decEq OutOfMemory RuleViolation = No (\case Refl impossible)
+  decEq NullPointer Ok = No (\case Refl impossible)
+  decEq NullPointer Error = No (\case Refl impossible)
+  decEq NullPointer InvalidParam = No (\case Refl impossible)
+  decEq NullPointer OutOfMemory = No (\case Refl impossible)
+  decEq NullPointer RuleViolation = No (\case Refl impossible)
+  decEq RuleViolation Ok = No (\case Refl impossible)
+  decEq RuleViolation Error = No (\case Refl impossible)
+  decEq RuleViolation InvalidParam = No (\case Refl impossible)
+  decEq RuleViolation OutOfMemory = No (\case Refl impossible)
+  decEq RuleViolation NullPointer = No (\case Refl impossible)
 
 --------------------------------------------------------------------------------
 -- Opaque Handles
@@ -210,8 +237,10 @@ data Handle : Type where
 ||| Returns Nothing if pointer is null
 public export
 createHandle : Bits64 -> Maybe Handle
-createHandle 0 = Nothing
-createHandle ptr = Just (MkHandle ptr)
+createHandle ptr =
+  case choose (ptr /= 0) of
+    Left ok => Just (MkHandle ptr {nonNull = ok})
+    Right _ => Nothing
 
 ||| Extract pointer value from handle
 public export
@@ -249,10 +278,10 @@ ptrSize MacOS = 64
 ptrSize BSD = 64
 ptrSize WASM = 32
 
-||| Pointer type for platform
+||| Pointer type for platform (pointer-sized integer)
 public export
 CPtr : Platform -> Type -> Type
-CPtr p _ = Bits (ptrSize p)
+CPtr p _ = CSize p
 
 --------------------------------------------------------------------------------
 -- Memory Layout Proofs
@@ -271,8 +300,6 @@ data HasAlignment : Type -> Nat -> Type where
 ||| Size of C types (platform-specific)
 public export
 cSizeOf : (p : Platform) -> (t : Type) -> Nat
-cSizeOf p (CInt _) = 4
-cSizeOf p (CSize _) = if ptrSize p == 64 then 8 else 4
 cSizeOf p Bits32 = 4
 cSizeOf p Bits64 = 8
 cSizeOf p Double = 8
@@ -281,8 +308,6 @@ cSizeOf p _ = ptrSize p `div` 8
 ||| Alignment of C types (platform-specific)
 public export
 cAlignOf : (p : Platform) -> (t : Type) -> Nat
-cAlignOf p (CInt _) = 4
-cAlignOf p (CSize _) = if ptrSize p == 64 then 8 else 4
 cAlignOf p Bits32 = 4
 cAlignOf p Bits64 = 8
 cAlignOf p Double = 8
@@ -307,53 +332,6 @@ data ValidGOE : GOE -> Type where
 public export
 data ValidPCS : PCSMark -> Type where
   ValidPCSProof : ValidPCS m
-
---------------------------------------------------------------------------------
--- FFI Declarations
---------------------------------------------------------------------------------
-
-||| Declare external C functions
-||| These will be implemented in Zig FFI
-namespace Foreign
-
-  ||| Parse an ISU element code string (e.g. "3Lz+3T") into internal representation
-  export
-  %foreign "C:anvomidaviser_parse_element, libanvomidaviser"
-  prim__parseElement : String -> PrimIO Bits64
-
-  ||| Score a complete program and return the total segment score
-  export
-  %foreign "C:anvomidaviser_score_program, libanvomidaviser"
-  prim__scoreProgram : Bits64 -> PrimIO Bits32
-
-  ||| Validate a program against ISU technical rules
-  export
-  %foreign "C:anvomidaviser_validate_program, libanvomidaviser"
-  prim__validateProgram : Bits64 -> PrimIO Bits32
-
-  ||| Safe wrapper around element parsing
-  export
-  parseElement : String -> IO (Maybe Handle)
-  parseElement code = do
-    ptr <- primIO (prim__parseElement code)
-    pure (createHandle ptr)
-
-  ||| Safe wrapper around program scoring
-  export
-  scoreProgram : Handle -> IO (Either Result Bits32)
-  scoreProgram h = do
-    result <- primIO (prim__scoreProgram (handlePtr h))
-    pure (Right result)
-
-  ||| Safe wrapper around program validation
-  export
-  validateProgram : Handle -> IO (Either Result Bool)
-  validateProgram h = do
-    result <- primIO (prim__validateProgram (handlePtr h))
-    pure $ case result of
-      0 => Right True   -- Program is valid
-      1 => Right False  -- Program has rule violations
-      _ => Left Error
 
 --------------------------------------------------------------------------------
 -- Verification
