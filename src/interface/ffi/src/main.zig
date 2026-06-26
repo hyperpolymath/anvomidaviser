@@ -38,12 +38,12 @@ pub const Result = enum(c_int) {
     rule_violation = 5,
 };
 
-/// Library handle (opaque to prevent direct access)
-pub const Handle = opaque {
-    // Internal state hidden from C
+/// Library handle. Opaque to C (passed as a pointer); fields are private to
+/// this module. A concrete struct (not Zig `opaque`) so internal state can be
+/// stored and accessed here.
+pub const Handle = struct {
     allocator: std.mem.Allocator,
     initialized: bool,
-    // Add your fields here
 };
 
 //==============================================================================
@@ -285,7 +285,7 @@ export fn anvomidaviser_get_string(handle: ?*Handle) ?[*:0]const u8 {
     if (!h.initialized) {
         setError("Handle not initialized");
         return null;
-    };
+    }
 
     const result = h.allocator.dupeZ(u8, "Anvomidaviser score pending") catch {
         setError("Failed to allocate string");
