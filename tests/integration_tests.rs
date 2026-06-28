@@ -345,7 +345,7 @@ fn test_full_free_skate_program_parsing_and_scoring() {
     );
 
     // Calculate total base value
-    let total_base: f64 = elements.iter().map(|e| scorer::base_value(e)).sum();
+    let total_base: f64 = elements.iter().map(scorer::base_value).sum();
     // Expected: 3Lz+3T(10.10) + 3F(5.30) + CCoSp4(3.50) + StSq3(3.30) +
     //           3Lo(4.90) + 2A+2T(4.60) + 3S(4.30) + FSSp3(2.50) +
     //           2A(3.30) + 3Lz+2T+2Lo(9.70) + CoSp4(3.00) + ChSq1(3.00)
