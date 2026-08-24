@@ -1,14 +1,13 @@
-<!-- SPDX-License-Identifier: CC-BY-SA-4.0 -->
-# anvomidaviser — Repository Topology
+== anvomidaviser — Repository Topology
 
-## Overview
+=== Overview
 
-ISU notation to formal Anvomidav choreography engine.
-Part of the hyperpolymath -iser family (https://github.com/hyperpolymath/iseriser).
+ISU notation to formal Anvomidav choreography engine. Part of the
+hyperpolymath -iser family (https://github.com/hyperpolymath/iseriser).
 
-## Directory Map
+=== Directory Map
 
-```
+....
 anvomidaviser/
 ├── 0-AI-MANIFEST.a2ml              # AI agent entry point (read first)
 ├── Cargo.toml                       # Rust project manifest
@@ -81,11 +80,11 @@ anvomidaviser/
 │
 └── .github/                         # GitHub community metadata + workflows
     └── workflows/                   # 17 CI/CD workflows
-```
+....
 
-## Data Flow
+=== Data Flow
 
-```
+....
 anvomidaviser.toml (manifest)
         │
         ▼
@@ -116,15 +115,17 @@ anvomidaviser.toml (manifest)
         │
         ▼
    Output: .anvomidav files, score sheets, validation reports
-```
+....
 
-## Key Integration Points
+=== Key Integration Points
 
-| System | Role |
-|--------|------|
-| **iseriser** | Meta-framework that generated this scaffold |
-| **proven** | Shared Idris2 verified library for common proofs |
-| **typell** | Type theory engine used by ABI layer |
-| **boj-server** | MCP cartridge host for remote scoring access |
-| **verisimdb** | Historical competition data storage |
-| **panll** | Visual panel for program planning UI |
+[cols=",",options="header",]
+|===
+|System |Role
+|*iseriser* |Meta-framework that generated this scaffold
+|*proven* |Shared Idris2 verified library for common proofs
+|*typell* |Type theory engine used by ABI layer
+|*boj-server* |MCP cartridge host for remote scoring access
+|*verisimdb* |Historical competition data storage
+|*panll* |Visual panel for program planning UI
+|===
