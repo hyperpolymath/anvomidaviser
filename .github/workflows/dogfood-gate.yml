@@ -114,6 +114,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v7.0.1
 
+      - name: Detector self-test (fixtures)
+        run: bash tests/test-invisible-char-detection.sh
+
       - name: Scan for invisible characters
         id: lint
         run: |
@@ -127,6 +130,7 @@ jobs:
             -not -path '*/.deno/*' -not -path '*/target/*' \
             -not -path '*/_build/*' -not -path '*/deps/*' \
             -not -path '*/external_corpora/*' -not -path '*/.lake/*' \
+            -not -path '*/tests/fixtures/invisible-chars/*' \
             -type f \( -name '*.rs' -o -name '*.ex' -o -name '*.exs' -o -name '*.res' \
               -o -name '*.js' -o -name '*.ts' -o -name '*.json' -o -name '*.toml' \
               -o -name '*.yml' -o -name '*.yaml' -o -name '*.md' -o -name '*.adoc' \
